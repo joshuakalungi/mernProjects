@@ -1,7 +1,28 @@
 {/*import the express module inorder to intialize an express app*/}
 
 import express from 'express'
+import devBundle from './devBundle'
+import path from 'path'
+import template from './../template'
 
 const app = express()
-
 {/* then we will use this express app to build out the rest of the Node server application*/}
+devBundle.compile(app)
+{/* we will use the Express app to listen on the port 3000*/}
+
+const CURRENT_WORKING_DIR = process.cwd()
+app.use('/dist', express.static(path.join(CURRENT_WORKING_DIR, 'dist')))
+{/* we will use the Express app to serve static files from the dist folder*/}
+
+app.get('/', (req, res) => {
+    res.status(200).send(template())
+})
+
+let port = process.env.PORT || 3000
+app.listen(port, function onStart(err) {
+    if (err) {
+        console.log(err)
+    }
+    console.info('Server started on port %s.', port)
+})
+{/* we will use the Express app to listen on the port 3000*/}
